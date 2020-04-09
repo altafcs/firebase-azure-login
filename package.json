@@ -1,0 +1,31 @@
+{
+  "name": "firebase-azure-login",
+  "version": "6.4.0",
+  "author": "altaf",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "genversion --semi lib/version.js",
+    "build:clean": "rimraf android/build && rimraf ios/build",
+    "prepare": "yarn run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/altafcs/firebase-azure-login.git"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "react",
+    "react-native",
+    "firebase",
+    "auth"
+  ],
+  "peerDependencies": {
+    "@react-native-firebase/app": "*"
+  },
+  "gitHead": "aa127b844418db58d33d00b7ba08872273e6f658",
+  "publishConfig": {
+    "access": "public"
+  }
+}
