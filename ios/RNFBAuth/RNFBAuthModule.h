@@ -20,6 +20,7 @@
 #import <Firebase/Firebase.h>
 
 @interface RNFBAuthModule : NSObject <RCTBridgeModule>
+@property(strong, nonatomic) FIROAuthProvider *microsoftProvider;
 @end
 
 extern NSString * const AuthErrorCode_toJSErrorCode[];
