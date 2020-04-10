@@ -2,7 +2,7 @@
   "name": "firebase-azure-login",
   "version": "6.4.0",
   "author": "altaf",
-  "description": "",
+  "description": "module for azure login",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
