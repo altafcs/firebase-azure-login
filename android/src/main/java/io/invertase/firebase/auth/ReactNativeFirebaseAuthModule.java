@@ -1,26 +1,12 @@
 package io.invertase.firebase.auth;
 
-/*
- * Copyright (c) 2016-present Invertase Limited & Contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this library except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Parcel;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -30,6 +16,8 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.ActionCodeResult;
@@ -63,6 +51,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
@@ -1331,6 +1320,40 @@ class ReactNativeFirebaseAuthModule extends ReactNativeFirebaseModule {
     }
   }
 
+
+  @ReactMethod
+  public void signInWithMicrosoft(final String appName, final Promise promise) {
+    ArrayList<String> scopes = new ArrayList<>();
+
+    Activity activity = this.getCurrentActivity();
+
+    FirebaseApp firebaseApp = FirebaseApp.getInstance(appName);
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(firebaseApp);
+    String providerId = "microsoft.com";
+
+    firebaseAuth.startActivityForSignInWithProvider(activity,
+      OAuthProvider.newBuilder(providerId, firebaseAuth)
+        .setScopes(scopes).build())
+      .addOnSuccessListener(
+        new OnSuccessListener<AuthResult>() {
+          @Override
+          public void onSuccess(AuthResult authResult) {
+            Log.d(TAG, "activitySignIn:onSuccess:" + authResult.getUser());
+            promise.resolve(authResult.getUser());
+            //updateUI(authResult.getUser());
+          }
+        })
+      .addOnFailureListener(
+        new OnFailureListener() {
+          @Override
+          public void onFailure(@NonNull Exception e) {
+            promise.reject(e);
+            Log.w(TAG, "activitySignIn:onFailure", e);
+          }
+        });
+  }
+
+
   /**
    * Returns an instance of AuthCredential for the specified provider
    */
@@ -1910,7 +1933,7 @@ class ReactNativeFirebaseAuthModule extends ReactNativeFirebaseModule {
 
   private ActionCodeSettings buildActionCodeSettings(ReadableMap actionCodeSettings) {
     ActionCodeSettings.Builder builder = ActionCodeSettings.newBuilder();
-    
+
     // Required
     String url = actionCodeSettings.getString("url");
     builder = builder.setUrl(Objects.requireNonNull(url));
