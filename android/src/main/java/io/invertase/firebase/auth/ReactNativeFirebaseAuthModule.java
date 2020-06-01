@@ -1339,7 +1339,8 @@ class ReactNativeFirebaseAuthModule extends ReactNativeFirebaseModule {
           @Override
           public void onSuccess(AuthResult authResult) {
             Log.d(TAG, "activitySignIn:onSuccess:" + authResult.getUser());
-            promise.resolve(authResult.getUser());
+            // promise.resolve(authResult.getUser());
+            promiseWithAuthResult(authResult, promise);
             //updateUI(authResult.getUser());
           }
         })
@@ -1347,7 +1348,8 @@ class ReactNativeFirebaseAuthModule extends ReactNativeFirebaseModule {
         new OnFailureListener() {
           @Override
           public void onFailure(@NonNull Exception e) {
-            promise.reject(e);
+            //promise.reject(e);
+            promiseRejectAuthException(promise, e);
             Log.w(TAG, "activitySignIn:onFailure", e);
           }
         });
